@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "71644b40-9f66-4ba1-9a3b-9ba29b708b2d",
+		"name": "E2E_Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17142411"
+	},
+	"item": [
+		{
+			"name": "HappyFlow",
+			"item": [
+				{
+					"name": "GET all the users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST create a user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var ID=Math.floor((Math.random()*1000+1))\r",
+									"\r",
+									"console.log(ID)\r",
+									"pm.collectionVariables.set('userId',ID)\r",
+									"\r",
+									"\r",
+									"\r",
+									"function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 20;\r",
+									"        maxValue = 20;\r",
+									"    }\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomString = \"\";\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"pm.variables.set('randomString', randomString());\r",
+									"\r",
+									"console.log(randomString);\r",
+									"\r",
+									"\r",
+									"\r",
+									"function createRandomString(length=20) {\r",
+									"  let randomString = \"\";\r",
+									"  for (let i = 0; i < length; i++) {\r",
+									"    randomString += pm.variables.replaceIn(\"{{$randomString}}\");\r",
+									"  }\r",
+									"  return randomString;\r",
+									"}\r",
+									"// Set the length of the random string\r",
+									"const STRING_LENGTH = 20;\r",
+									"\r",
+									"// Generate a random string and store it in a variable\r",
+									"pm.variables.set(\"randomString\", createRandomString(STRING_LENGTH));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "   {\r\n        \"id\": {{ID}},\r\n        \"name\": \"{{$randomFirstName}}\",\r\n        \"username\": {{$randomString}},\r\n        \"email\": \"{{$randomEmail}}\",\r\n        \"address\": {\r\n            \"street\": \"{{$randomStreetName}}\",\r\n            \"suite\": \"Apt. 556\",\r\n            \"city\": \"{{$randomCity}}\",\r\n            \"zipcode\": \"{{$randomCountryCode}}\",\r\n            \"geo\": {\r\n                \"lat\": \"-37.3159\",\r\n                \"lng\": \"81.1496\"\r\n            }\r\n        },\r\n        \"phone\": \"{{$randomPhoneNumber}}\",\r\n        \"website\": \"hildegard.org\",\r\n        \"company\": {\r\n            \"name\": \"{{createRandomString}}\",\r\n            \"catchPhrase\": \"{{$randomCatchPhrase}}\",\r\n            \"bs\": \"harness real-time e-markets\"\r\n        }\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validation For UserID",
+			"item": [
+				{
+					"name": "Invalid User ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {\r",
+									"    var result           = '';\r",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r",
+									"    var charactersLength = characters.length;\r",
+									"    for ( var i = 0; i < length; i++ ) {\r",
+									"      result += characters.charAt(Math.floor(Math.random() * \r",
+									" charactersLength));\r",
+									"   }\r",
+									"   pm.collectionVariables.set(\"ID\", result);\r",
+									"   return result;\r",
+									"}\r",
+									"\r",
+									"console.log(makeid(5));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{ID}},\r\n    \"name\": \"Ervin Howell\",\r\n    \"username\": \"Antonette\",\r\n    \"email\": \"Shanna@melissa.tv\",\r\n    \"address\": {\r\n      \"street\": \"Victor Plains\",\r\n      \"suite\": \"Suite 879\",\r\n      \"city\": \"Wisokyburgh\",\r\n      \"zipcode\": \"90566-7771\",\r\n      \"geo\": {\r\n        \"lat\": \"-43.9509\",\r\n        \"lng\": \"-34.4618\"\r\n      }\r\n    },\r\n    \"phone\": \"010-692-6593 x09125\",\r\n    \"website\": \"anastasia.net\",\r\n    \"company\": {\r\n      \"name\": \"Deckow-Crist\",\r\n      \"catchPhrase\": \"Proactive didactic contingency\",\r\n      \"bs\": \"synergize scalable supply-chains\"\r\n    }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validation for FirstName",
+			"item": [
+				{
+					"name": "validation on Name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var response= pm.response.json();\r",
+									"pm.test(\"validate name\",function(){\r",
+									"\r",
+									"console.log(pm.iterationData.get(\"name\"))    \r",
+									"pm.expect(response.json.name).to.eql(pm.iterationData.get(\"name\"))\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"id\": 2,\r\n    \"name\": {{name}},\r\n    \"username\": \"Antonette\",\r\n    \"email\": \"Shanna@melissa.tv\",\r\n    \"address\": {\r\n      \"street\": \"Victor Plains\",\r\n      \"suite\": \"Suite 879\",\r\n      \"city\": \"Wisokyburgh\",\r\n      \"zipcode\": \"90566-7771\",\r\n      \"geo\": {\r\n        \"lat\": \"-43.9509\",\r\n        \"lng\": \"-34.4618\"\r\n      }\r\n    },\r\n    \"phone\": \"010-692-6593 x09125\",\r\n    \"website\": \"anastasia.net\",\r\n    \"company\": {\r\n      \"name\": \"Deckow-Crist\",\r\n      \"catchPhrase\": \"Proactive didactic contingency\",\r\n      \"bs\": \"synergize scalable supply-chains\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.postman.com/collections/17142411-71644b40-9f66-4ba1-9a3b-9ba29b708b2d?apikey=PMAK-658733456dd6962f0f279b42-6cb017ef57b59e52b1d596280a555b0e49",
+					"protocol": "https",
+					"host": [
+						"api",
+						"postman",
+						"com"
+					],
+					"path": [
+						"collections",
+						"17142411-71644b40-9f66-4ba1-9a3b-9ba29b708b2d"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "PMAK-658733456dd6962f0f279b42-6cb017ef57b59e52b1d596280a555b0e49"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://jsonplaceholder.typicode.com",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "username",
+			"value": ""
+		},
+		{
+			"key": "ID",
+			"value": ""
+		}
+	]
+}
